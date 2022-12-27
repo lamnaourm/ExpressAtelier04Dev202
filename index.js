@@ -46,20 +46,47 @@ app.get('/produits/id/:id', (req, res) => {
     res.status(201).json({id:id , ...JSON.parse(data)});
 })
 
-app.listen(port, () => {
-    console.log('Serveur lance ....')
-})
-
-
 app.get('/produits/famille/:famille', (req, res) => {
 
+    var prds = []; 
+
+    const files = fs.readdirSync(directory);
+
+    files.forEach(file => {
+        const data = fs.readFileSync(path.join(directory, file), 'utf8');
+        const prd = JSON.parse(data); 
+        if(prd.famille === req.params.famille)
+            prds.push({id:file.split('.')[0], ...JSON.parse(data)});
+    })
+
+    res.json(prds);
 })
 
 app.put('/produits/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    if(!fs.existsSync(path.join(directory, `${id}.txt`))){
+        return res.sendStatus(404);
+    }
+
+    fs.writeFileSync(path.join(directory,`${id}.txt`) ,JSON.stringify(req.body));
+    res.sendStatus(202);
 
 })
 
 app.delete('/produits/:id', (req, res) => {
 
+    const id = req.params.id;
+
+    if(!fs.existsSync(path.join(directory, `${id}.txt`))){
+        return res.sendStatus(404);
+    }
+
+    fs.unlinkSync(path.join(directory,`${id}.txt`))
+    res.sendStatus(202);
 })
 
+app.listen(port, () => {
+    console.log('Serveur lance ....')
+})
