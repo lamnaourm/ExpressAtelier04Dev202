@@ -49,3 +49,17 @@ app.get('/produits/id/:id', (req, res) => {
 app.listen(port, () => {
     console.log('Serveur lance ....')
 })
+
+
+app.get('/produits/famille/:famille', (req, res) => {
+
+})
+
+app.put('/produits/:id', (req, res) => {
+
+})
+
+app.delete('/produits/:id', (req, res) => {
+
+})
+
